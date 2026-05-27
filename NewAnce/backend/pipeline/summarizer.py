@@ -1,8 +1,18 @@
 from openai import OpenAI
+import os
 
-client = OpenAI()
+def get_client():
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        return None
+    return OpenAI(api_key=api_key)
 
 def summarize_article(title: str, body: str) -> str:
+    client = get_client()
+    if not client:
+        # API 키 없을 때 제목을 요약으로 반환
+        return title[:100]
+
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[

@@ -3,7 +3,7 @@ uvicorn==0.29.0
 sqlalchemy==2.0.30
 psycopg2-binary==2.9.9
 redis==5.0.4
-openai==1.30.0
+openai>=1.52.0   # ==1.30.0 에서 변경
 langchain==0.2.0
 beautifulsoup4==4.12.3
 selenium==4.21.0

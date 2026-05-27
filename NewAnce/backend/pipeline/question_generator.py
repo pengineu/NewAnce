@@ -1,6 +1,11 @@
 from openai import OpenAI
+import os
 
-client = OpenAI()
+def get_client():
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        return None
+    return OpenAI(api_key=api_key)
 
 def calculate_bias_score(user_history: list[dict]) -> dict:
     total = len(user_history)
@@ -17,6 +22,12 @@ def generate_question(user_history: list[dict], top_keyword: str) -> str | None:
     bias = calculate_bias_score(user_history)
     if len(user_history) <= 5 or bias["score"] < 0.6:
         return None
+
+    client = get_client()
+    if not client:
+        # API 키 없을 때 Mock 질문 반환
+        return f"혹시 '{top_keyword}'에 대해 다른 관점도 살펴보셨나요? →다른 관점 보러가기"
+
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[

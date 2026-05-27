@@ -1,7 +1,13 @@
 from openai import OpenAI
+import os
 import json
+import random
 
-client = OpenAI()
+def get_client():
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        return None
+    return OpenAI(api_key=api_key)
 
 SYSTEM_PROMPT = """
 당신은 뉴스 기사의 정치적 관점을 분류하는 전문가입니다.
@@ -11,6 +17,13 @@ SYSTEM_PROMPT = """
 """
 
 def classify_perspective(title: str, body: str, media_bias: str | None = None) -> dict:
+    client = get_client()
+    if not client:
+        # API 키 없을 때 언론사 출처 기반으로 분류
+        if media_bias:
+            return {"perspective": media_bias, "confidence": 0.7}
+        return {"perspective": random.choice(["진보", "중립", "보수"]), "confidence": 0.5}
+
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[

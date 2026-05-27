@@ -4,7 +4,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "3000:3000"
+      - "5173:5173"  # 3000:3000 에서 변경
     depends_on:
       - backend
 
@@ -22,6 +22,7 @@ services:
 
   db:
     image: postgres:15
+    platform: linux/amd64
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password

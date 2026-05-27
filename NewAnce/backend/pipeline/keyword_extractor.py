@@ -1,9 +1,19 @@
 from openai import OpenAI
+import os
 import json
 
-client = OpenAI()
+def get_client():
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        return None
+    return OpenAI(api_key=api_key)
 
 def extract_keywords(title: str, body: str) -> dict:
+    client = get_client()
+    if not client:
+        # API 키 없을 때 Mock 키워드 반환
+        return {"persons": [], "places": [], "topics": []}
+
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
